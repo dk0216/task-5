@@ -48,4 +48,13 @@ public static class TaskService
         
         Tasks[index] = task;
     }
+
+    public static void Delete(int id)
+    {
+        var task = Get(id);
+        if(task is null)
+            return;
+
+        Tasks.Remove(task);
+    }
 }

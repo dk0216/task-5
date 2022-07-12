@@ -26,7 +26,10 @@ public class TaskProcessorController : ControllerBase
         if (existingTask is null)
             return NotFound();
 
-        TaskService.Update(task);
+        task.Status = "COMPLETED";
+
+        TaskService.Delete(task);
+        TaskProcessorService.Add(task);
 
         return NoContent();
     }
