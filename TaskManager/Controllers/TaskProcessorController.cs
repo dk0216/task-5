@@ -28,7 +28,7 @@ public class TaskProcessorController : ControllerBase
 
         task.Status = "COMPLETED";
 
-        TaskService.Delete(task);
+        TaskService.Delete(id);
         TaskProcessorService.Add(task);
 
         return NoContent();
