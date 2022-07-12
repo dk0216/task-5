@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: taskmanager
+spec:
+  selector:
+    matchLabels:
+      app: taskmanager
+  template:
+    metadata:
+      labels:
+        app: taskmanager
+    spec:
+      containers:
+      - name: taskmanager
+        image: den86/taskmanager:latest
+        env:
+        - name: DbServer
+          value: "db-mssql"
+        - name: DbPort
+          value: "1433"
+        - name: DbUser
+          value: "SA"
+        - name: Password
+          value: "January2018"
+        - name: Database
+          value: "TaskManagerDb"
+        resources:
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
+      initContainers:
+      - name: init-db-mssql
+        image: busybox:1.28
+        command: ['sh', '-c', "until nslookup db-mssql.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for mydb; sleep 2; done"]
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: taskmanager
+spec:
+  type: NodePort
+  selector:
+    app: taskmanager
+  ports:
+  - port: 80
+    targetPort: 80
+    nodePort: 31700
